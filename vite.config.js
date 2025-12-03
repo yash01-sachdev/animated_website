@@ -2,17 +2,20 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: "/animated_website/",
   build: {
-    copyPublicDir: true,   // forces real copy, not symlinks
+    assetsInlineLimit: 0,         // disables automatic bundling of fonts
     rollupOptions: {
-      preserveSymlinks: false,  // prevents symlink creation
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (/\.woff2$/.test(assetInfo.name)) {
+            return 'fonts/[name][extname]';  // put fonts in a separate folder
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
     }
   }
 })
-
-  
-
